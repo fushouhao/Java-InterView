@@ -190,16 +190,101 @@ Java获取反射的三种方法
 线程切换带来的原子性问题 解决办法：使用多线程之间同步synchronized或使用锁(lock)。
 缓存导致的可见性问题 解决办法：synchronized、volatile、LOCK，可以解决可见性问题
 编译优化带来的有序性问题 解决办法：Happens-Before 规则可以解决有序性问题
-2.
+### ***2. Java 线程创建的方法***
+1.继承Thread类（本身就实现runnable接口） 重写run方法
+2.实现runnable接口 重写run方法
+3.实现Callable 重写call方法 配合FearureTask（也是实现runnable接口） 将其放入thread内
+4.基于线程池 线程池的worker类底层也是实现了runnable接口 构建线程
+### ***3. Java 线程的状态***
+1.NEW:Thread对象被创建出来 但是还没有执行start方法
+2.RUNNABLE：调用了start方法 
+3.BLOCKED：synchronized没有拿到同步锁 被阻塞的情况
+4.WAITING：调用了wait方法 需要被手动唤醒
+5.TIMED_WAITING：调用sleep或join方法 会被自动唤醒 无需手动唤醒
+6.TERMINATED：run方法执行完毕 线程声明周期结束
+### ***4. Java 终止线程***
+1.stop方法
+2.使用共享变量
+3.interrupt
+线程默认情况下 interrupt的标记位为false 可以使用isInterrupted来判断标记位状态 然后使用.interrpt
+或者直接使用interrupted 先归位为true 后标记为false
+ 
+
+
+
+
+
+
 
 ## 3.Spring
 ######
 ### ***1. Spring如何创建一个bean对象***
 1.class文件 –》 推断构造方法（一个类里有多个构造方法 spring优先使用无参的构造方法，其次可以用注解@autowired指定使用哪个构造方法 传对象的时候 先bytype 再byname） –》普通对象 –》依赖注入（spring会将普通对象加了@auto wired注解的属性赋值）—》初始化（执行afterPropertiesSet）—》初始化后 AOP—》代理对象—》放入Map<beanName,bean对象（代理对象）> 单例池—》bean对象
-### ***. 单例池***
-
-
-
-
+### ***2. Spring的设计模式***
+1.单例模式 
+是以bean的名字是单例bean 默认在一个JVM里 对象只创建一次到不用了再销毁避免过程中频繁创建对象
+Spring的依赖注入 包括懒加载方式 都是发生在AbstractBeanFactory的getBean里，getBean方法调用getSingleton进行bean创建 
+单例模式定义：保证一个类仅有一个实例，并提供一个访问它的全局访问点
+Spring中的单例模式完成了后半句话，即提供了全局的访问点BeanFactory
+我们可以通过@bean 再次向容器里添加该类型的bean 所以他是传入的名字一样 查到的对象就是一样的
+2.工厂模式
+工厂模式  bean的创建交给工厂去实现 而Spring容器管理这个工厂 beanFactory ,ApplicationContext 去get一个bean
+3.代理模式
+实现方式：AOP底层，就是动态代理模式的实现。
+         动态代理：在内存中构建的，不需要手动编写代理类  
+         静态代理：需要手工编写代理类，代理类引用被代理对象。
+切面在应用运行的时刻被织入。一般情况下，在织入切面时，AOP容器会为目标对象创建动态的创建一个代理对象。SpringAOP就是以这种方式织入切面的
+4.模板模式 
+整合第三方框架 Spring模板方法模式实质：是模板方法模式和回调模式的结合，是Template Method不需要继承的另一种实现方式。Spring几乎所有的外接扩展都采用这种模式。
+具体实现：JDBC的抽象和对Hibernate的集成，都采用了一种理念或者处理方式，那就是模板方法模式与相应的Callback接口相结合。
+采用模板方法模式是为了以一种统一而集中的方式来处理资源的获取和释放
+父类定义了骨架（调用哪些方法及顺序），某些特定方法由子类实现。
+最大的好处：代码复用，减少重复代码。除了子类要实现的特定方法，其他方法及方法调用顺序都在父类中预先写好了。
+5.策略模式 加载不同地方的文件  抽取了resource接口
+6.适配器模式
+实现方式：SpringMVC中的适配器HandlerAdatper，HandlerAdatper根据Handler规则执行不同的Handler	     
+实现意义：HandlerAdatper使得Handler的扩展变得容易，只需要增加一个新的Handler和一个对应的HandlerAdapter即可。因此Spring定义了一个适配接口，使得每一种Controller有一种对应的适配器实现类，让适配器代替controller执行相应的方法。这样在扩展Controller时，只需要增加一个适配器类就完成了SpringMVC的扩展了
+7.装饰器模式
+将原生类的对象作为参数传到装饰类里进行进一步处理
+实现方式：Spring中用到的包装器模式在类名上有两种表现：一种是类名中含有Wrapper（querrywrapper动态条件查询），另一种是类名中含有Decorator
+通过AOP 来为bean添加额外的功能
+ 8.观察者模式
+实现方式：Spring的事件驱动模型使用的是观察者模式 ，Spring中Observer模式常用的地方是listener的实现
+具体实现：事件机制的实现需要三个部分，即：事件源、事件、事件监听器
+1.ApplicationEvent抽象类[事件]通过继承它，实现自定义事件。另外，通过它的 source 属性可以获取事件源，timestamp 属性可以获得发生时间
+2.ApplicationListener接口[事件监听器]
+3.ApplicationContext接口[事件源]通过实现它，来监听指定类型事件并响应动作
+9.MVC view 收集和展示数据
+      Controller 接收和处理用户请求
+          Model 数据访问业务处理
+### ***3.@Autowired 和 @Resource的区别 ***
+### **** 共同点 ****
+从容器中获取相关对象
+添加在属性上面后可以自动将容器中相关对象注入到该成员变量上
+两者都可以写在字段和setter方法上
+### **** 不同点 ****
+1.@Autowired 
+Spring平台提供
+需要导入依赖 只能按照bytype注入
+如果要按byName注入的话需要与@Qualififier（名称）结合
+2.@Resource
+J2EE提供
+按照名称自动注入 
+Spring 将@Resource注解的name属性解析为bean的名字 而type属性则解析为bean的类型 所以如果使用name属性则使用byName的自动注入策略
+如果使用type属性 则使用byType自动注入策略 如果既不指定name 也不指定type 则通过反射机制使用byName
+装配顺序
+1.如果同时指定了name和type 则从Spring上下文中找到唯一的bean去进行装配 找不到报异常
+2.如果指定了name 则在上下文中查找名称 id匹配的bean进行装配 找不到报出异常
+3.如果指定了type则从上下文中找出类似匹配的唯一bean进行装配 如果找不到或者找到多个 则报出异常
+4.如果既没有指定name 又没有指定type 则按照byName方式进行装配 如果没有匹配 则会退回一个原始类型进行匹配 如果匹配则自动装配
+### ***4.常用注解 ***
+1.@Controller @Service @RestController
+2.@RequestBody
+3.@Indexed
+4.@Import
+### ***5.循环依赖 ***
+1.A对象 里又有一个A对象
+2.A依赖于B B依赖于A
+3.A依赖于B B依赖于C C依赖于A
 
 
