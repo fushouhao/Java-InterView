@@ -466,5 +466,14 @@ Union 在合并的基础上去重
 <img width="527" alt="image" src="https://github.com/fushouhao/Java-InterView/assets/94434988/389072cf-89ea-48f8-a99e-ab4bfe48f08d">
 <img width="394" alt="image" src="https://github.com/fushouhao/Java-InterView/assets/94434988/8ffdb64d-48d3-4935-87d9-e53f35b00cb2">
 
+### ****6.存储引擎****
+### ***** 1.MYSQL的体系结构 *****
+1.客户端连接器
+2.连接层 最上层是一些客户端和链接服务，主要完成一些类似连接处理，授权认证以及相关的安全方案。服务器也会为安全接入的每一个客户端验证他具有的操作权限
+3.服务层 主要完成大多数核心业务服务功能 如SQL接口 并完成缓存的查询 SQL的分析和优化，部分内置函数的执行，所有跨存储引擎的功能也在这一层实现 
+4.引擎层 真正负责了MySQL中数据的存储和提取，服务器通过API和存储引擎进行通信。不同的存储引擎具有不同的功能
+5.存储层 存储在文件系统之上并完成与存储引擎的交互
+![image](https://github.com/fushouhao/Java-InterView/assets/94434988/9e592d11-1834-4130-a9d7-4353565c2212)
+
 
      
