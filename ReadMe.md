@@ -474,6 +474,15 @@ Union 在合并的基础上去重
 4.引擎层 真正负责了MySQL中数据的存储和提取，服务器通过API和存储引擎进行通信。不同的存储引擎具有不同的功能
 5.存储层 存储在文件系统之上并完成与存储引擎的交互
 ![image](https://github.com/fushouhao/Java-InterView/assets/94434988/9e592d11-1834-4130-a9d7-4353565c2212)
+### ***** 2.InnoDB *****
+### ****** 1.特点 ******
+1.DML操作遵循ACID，支持事务
+2.行级锁 提高并发访问性能
+3.支持外键 FOREIGN KEY约束 保证数据的完整性和正确性
+### ****** 2.文件 ******
+xxx.ibd innoDB引擎 每张表都会对应这样一个表文件空间 存储该表的表结构 frm sdi，数据和索引
+查看ibd中的内容 ibd2sdi xxx.ibd
+<img width="470" alt="image" src="https://github.com/fushouhao/Java-InterView/assets/94434988/bd5d2d54-20b1-4520-8a9b-447ea529d785">
+### ***** 3.索引 *****
 
 
-     
